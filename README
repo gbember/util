@@ -1,0 +1,7 @@
+一些辅助函数
+
+cmap.go:线程安全的map[interface{}]interface{}
+crypto.go:加解密
+gc.go:gc信息
+gtimer.go:timer的一个封装
+math.go:数学函数(Abs)

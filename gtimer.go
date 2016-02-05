@@ -3,7 +3,6 @@ package util
 
 import (
 	"container/heap"
-	"log"
 	"sync"
 	"time"
 )
@@ -36,14 +35,13 @@ func NewGTimer() *GTimer {
 type timer_fun_list []*timer_fun
 
 type timer_fun struct {
-	tag string
 	t   int64
 	ref int64
 	fun func()
 }
 
 //加一个延迟执行任务函数
-func (gtmr *GTimer) AddAfter(tag string, t time.Duration, fun func()) (ref int64) {
+func (gtmr *GTimer) AddAfter(t time.Duration, fun func()) (ref int64) {
 	gtmr.mut.Lock()
 	defer gtmr.mut.Unlock()
 	if gtmr.tmr == nil {
@@ -53,7 +51,6 @@ func (gtmr *GTimer) AddAfter(tag string, t time.Duration, fun func()) (ref int64
 	gtmr.ref++
 
 	tf := &timer_fun{
-		tag: tag,
 		t:   time.Now().Add(t).UnixNano(),
 		ref: gtmr.ref,
 		fun: fun,
@@ -127,7 +124,6 @@ func (gtmr *GTimer) run() {
 			gtmr.tmr.Reset(time.Duration(tf.t - now))
 			break
 		}
-		log.Println(tf.tag)
 		//TODO 处理panic
 		gtmr.funBuf = append(gtmr.funBuf, tf.fun)
 	}
